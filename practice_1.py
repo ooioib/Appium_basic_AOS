@@ -1,3 +1,5 @@
+# practice_1.py
+
 import time
 from appium.webdriver.common.appiumby import AppiumBy
 from selenium.webdriver.support.ui import WebDriverWait

@@ -1,3 +1,5 @@
+# browser_base.py
+
 import time
 from appium import webdriver
 from appium.options.common.base import AppiumOptions

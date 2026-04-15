@@ -1,3 +1,5 @@
+# practice_2.py
+
 from appium.webdriver.common.appiumby import AppiumBy
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -16,20 +18,19 @@ class HybridAppDemo(AppiumConnection):
         try:
             print("GeneralStore 앱 실행 중...")
 
-            # 기존 앱 종료 후 재실행
+            # 앱 재실행
             self.driver.terminate_app("com.androidsample.generalstore")
             time.sleep(1)
-
             self.driver.activate_app("com.androidsample.generalstore")
             time.sleep(3)
 
             print("GeneralStore 앱 실행 완료")
 
-            wait = WebDriverWait(self.driver, 15)
+            wait = WebDriverWait(self.driver, 20)
 
-            # -----------------------------
+            # ---------------------------------
             # 1. 이름 입력
-            # -----------------------------
+            # ---------------------------------
             name_box = wait.until(
                 EC.presence_of_element_located(
                     (AppiumBy.CLASS_NAME, "android.widget.EditText")
@@ -37,9 +38,9 @@ class HybridAppDemo(AppiumConnection):
             )
             name_box.send_keys("Hello")
 
-            # -----------------------------
+            # ---------------------------------
             # 2. Let's Shop 클릭
-            # -----------------------------
+            # ---------------------------------
             wait.until(
                 EC.element_to_be_clickable(
                     (AppiumBy.ID,
@@ -47,19 +48,18 @@ class HybridAppDemo(AppiumConnection):
                 )
             ).click()
 
-            # -----------------------------
+            # ---------------------------------
             # 3. 상품 담기
-            # -----------------------------
+            # ---------------------------------
             wait.until(
                 EC.element_to_be_clickable(
-                    (AppiumBy.XPATH,
-                     '//*[@text="ADD TO CART"]')
+                    (AppiumBy.XPATH, '//*[@text="ADD TO CART"]')
                 )
             ).click()
 
-            # -----------------------------
+            # ---------------------------------
             # 4. 장바구니 이동
-            # -----------------------------
+            # ---------------------------------
             wait.until(
                 EC.element_to_be_clickable(
                     (AppiumBy.ID,
@@ -69,19 +69,18 @@ class HybridAppDemo(AppiumConnection):
 
             time.sleep(2)
 
-            # -----------------------------
+            # ---------------------------------
             # 5. 체크박스 클릭
-            # -----------------------------
+            # ---------------------------------
             wait.until(
                 EC.element_to_be_clickable(
-                    (AppiumBy.CLASS_NAME,
-                     "android.widget.CheckBox")
+                    (AppiumBy.CLASS_NAME, "android.widget.CheckBox")
                 )
             ).click()
 
-            # -----------------------------
+            # ---------------------------------
             # 6. 약관 롱클릭
-            # -----------------------------
+            # ---------------------------------
             terms = wait.until(
                 EC.presence_of_element_located(
                     (AppiumBy.XPATH,
@@ -102,18 +101,18 @@ class HybridAppDemo(AppiumConnection):
                 }
             )
 
-            # -----------------------------
+            # ---------------------------------
             # 7. 팝업 닫기
-            # -----------------------------
+            # ---------------------------------
             wait.until(
                 EC.element_to_be_clickable(
                     (AppiumBy.ID, "android:id/button1")
                 )
             ).click()
 
-            # -----------------------------
+            # ---------------------------------
             # 8. 웹사이트 이동
-            # -----------------------------
+            # ---------------------------------
             wait.until(
                 EC.element_to_be_clickable(
                     (AppiumBy.ID,
@@ -122,39 +121,41 @@ class HybridAppDemo(AppiumConnection):
             ).click()
 
             print("웹뷰 로딩 대기 중...")
-            time.sleep(8)
+            time.sleep(10)
 
-            # -----------------------------
-            # 9. 컨텍스트 확인
-            # -----------------------------
+            # ---------------------------------
+            # 9. WEBVIEW 전환
+            # ---------------------------------
             contexts = self.driver.contexts
             print("사용 가능한 컨텍스트:", contexts)
 
-            # WEBVIEW 찾기
             webview = None
             for ctx in contexts:
                 if "WEBVIEW" in ctx:
                     webview = ctx
                     break
 
-            if webview:
-                self.driver.switch_to.context(webview)
-                print("WEBVIEW 전환 완료:", webview)
-            else:
+            if not webview:
                 print("WEBVIEW 없음")
                 return
 
+            self.driver.switch_to.context(webview)
+            print("WEBVIEW 전환 완료:", webview)
+
             time.sleep(3)
 
-            # -----------------------------
-            # 10. 검색창 입력
-            # -----------------------------
+            # ---------------------------------
+            # 10. 검색창 찾기
+            # By.NAME 은 chrome113에서 오류남
+            # CSS_SELECTOR 로 수정
+            # ---------------------------------
             search_box = wait.until(
                 EC.presence_of_element_located(
-                    (By.NAME, "q")
+                    (By.CSS_SELECTOR, "textarea[name='q']")
                 )
             )
 
+            search_box.clear()
             search_box.send_keys("codenbox")
             search_box.send_keys(Keys.ENTER)
 
